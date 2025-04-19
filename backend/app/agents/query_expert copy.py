@@ -2,17 +2,17 @@ from crewai import Agent
 from typing import Optional, List, Dict, Any  
 from app.core.logger import logger  
 # 从tools包导入工具  
-from app.tools import TranslateToSQLTool  # 第一轮测试只需要这一个工具  
+from app.tools import TranslateToSQLTool, ValidateSQLTool  
 
 class QueryExpertAgent:  
-    """查询解析专家Agent类 - 第一轮测试版本 (仅SQL翻译)"""  
+    """查询解析专家Agent类"""  
     
     def get_agent(self, llm):  
         """创建并返回Agent实例"""  
-        # 第一轮测试只使用TranslateToSQLTool  
+        # 使用自定义工具类  
         tools = [  
             TranslateToSQLTool(),  
-            # ValidateSQLTool() 暂时移除，第二轮再添加  
+            ValidateSQLTool()  
         ]  
         
         return Agent(  

@@ -62,8 +62,18 @@ class MarketingFlow:
                 return crew.execute()  # 直接执行，不创建新循环  
             except Exception as e:  
                 logger.error(f"Crew执行错误: {str(e)}")  
-                return f"执行出错: {str(e)}"  
-        
+                return {"error": True, "message": f"执行出错: {str(e)}"}  
+    
         # 在线程池中执行，不创建新的事件循环  
         result = await loop.run_in_executor(None, execute_crew)  
-        return result   
+        # 检查结果是否为错误  
+        if isinstance(result, dict) and result.get("error") is True:  
+            # 向上抛出异常，终止流程  
+            raise Exception(result["message"])  
+        
+        # 处理CrewOutput对象  
+        if hasattr(result, 'raw'):  
+            return result.raw  
+        elif not isinstance(result, str):  
+            return str(result)  
+        return result 

@@ -1,9 +1,11 @@
-from crewai import Crew, Process, Task  
+from crewai import Crew, Process  
 from app.agents.marketing_analyst import MarketingAnalystAgent  
 from app.agents.content_creator import ContentCreatorAgent  
 from app.core.logger import logger  
 from app.utils.memory_manager import RedisMemoryManager  
 from app.utils.llm_factory import get_llm  
+# 导入任务生成器  
+from app.tasks import MarketingTasks  
 
 class MarketingCrew:  
     """营销战略Crew - 管理营销战略制定流程的2个Agent协作"""  
@@ -18,6 +20,12 @@ class MarketingCrew:
         # 创建两个Agent  
         self.marketing_analyst_agent = MarketingAnalystAgent().get_agent(self.llm)  
         self.content_creator_agent = ContentCreatorAgent().get_agent(self.llm)  
+        
+        # 创建任务生成器  
+        self.task_generator = MarketingTasks(  
+            self.marketing_analyst_agent,  
+            self.content_creator_agent  
+        )  
     
     def execute(self):  
         """执行营销战略Crew的完整流程 - 同步方法"""  
@@ -29,41 +37,39 @@ class MarketingCrew:
                 "启动营销战略制定流程..."  
             )  
             
-            # 创建任务  
-            user_profile_task = Task(  
-                description=f"分析用户画像并定义营销目标\n\n数据分析结果: {self.data_analysis_result}",  
-                expected_output="详细的用户画像分析和明确的营销目标定义",  
-                agent=self.marketing_analyst_agent,  
-                async_execution=False,  
-                callback=self._task_callback_sync("用户画像解读与目标定义", 25)  
+            # 使用任务生成器创建任务  
+            tasks = self.task_generator.create_tasks(  
+                self.data_analysis_result,  
+                self._task_callback_sync  
             )  
             
-            marketing_strategy_task = Task(  
-                description="制定完整的营销战略框架",  
-                expected_output="详细的营销战略文档，包括渠道策略、活动规划和资源分配",  
-                agent=self.marketing_analyst_agent,  
-                async_execution=False,  
-                context=[user_profile_task],  
-                callback=self._task_callback_sync("营销战略框架制定", 50)  
-            )  
+            # 添加监听器来检查任务结果  
+            def check_task_result(task, output):  
+                # 检查输出是否包含错误信息  
+                if isinstance(output, str) and self._is_error_result(output):  
+                    # 记录错误信息  
+                    error_msg = f"任务 {task.description} 失败: {output[:100]}..."  
+                    logger.error(error_msg)  
+                    # 引发异常以中断整个执行流程  
+                    raise Exception(error_msg)  
+                return output  
             
-            campaign_design_task = Task(  
-                description="设计创意营销活动",  
-                expected_output="详细的创意活动方案，包括活动主题、形式和预期效果",  
-                agent=self.content_creator_agent,  
-                async_execution=False,  
-                context=[marketing_strategy_task],  
-                callback=self._task_callback_sync("创意活动构思", 75)  
-            )  
-            
-            copywriting_task = Task(  
-                description="创作营销文案",  
-                expected_output="完整的营销文案，包括标题、正文和行动号召",  
-                agent=self.content_creator_agent,  
-                async_execution=False,  
-                context=[campaign_design_task],  
-                callback=self._task_callback_sync("营销文案创作", 95)  
-            )  
+            # 为每个任务添加结果检查  
+            for task in tasks:  
+                original_callback = task.callback  
+                
+                def wrapped_callback(task_obj, orig_cb):  
+                    def wrapper(output):  
+                        # 先检查输出  
+                        output_str = output.raw if hasattr(output, 'raw') else str(output)  
+                        check_task_result(task_obj, output_str)  
+                        # 如果没有引发异常，则调用原始回调  
+                        if orig_cb:  
+                            return orig_cb(output)  
+                        return output  
+                    return wrapper  
+                
+                task.callback = wrapped_callback(task, original_callback)  
             
             # 创建Crew  
             crew = Crew(  
@@ -71,12 +77,7 @@ class MarketingCrew:
                     self.marketing_analyst_agent,  
                     self.content_creator_agent  
                 ],  
-                tasks=[  
-                    user_profile_task,  
-                    marketing_strategy_task,  
-                    campaign_design_task,  
-                    copywriting_task  
-                ],  
+                tasks=tasks,  # 使用从任务生成器获取的任务列表  
                 process=Process.sequential,  
                 verbose=True,  
             )  
@@ -86,6 +87,17 @@ class MarketingCrew:
             
             # 处理结果，确保它是字符串  
             result_str = result.raw if hasattr(result, 'raw') else str(result)  
+            
+            # 最后再检查一次结果是否包含错误信息  
+            if self._is_error_result(result_str):  
+                error_msg = f"执行结果包含错误: {result_str[:200]}..."  
+                logger.error(error_msg)  
+                self._update_progress_sync(  
+                    self.job_id,  
+                    -1,  
+                    error_msg  
+                )  
+                return error_msg  
             
             # 更新最终结果（使用同步方法）  
             self._update_progress_sync(  
@@ -105,6 +117,20 @@ class MarketingCrew:
                 error_message  
             )  
             return f"处理您的请求时出现错误: {str(e)}"  
+
+    def _is_error_result(self, result: str) -> bool:  
+        """检查结果是否包含错误信息"""  
+        error_indicators = [  
+            "错误:", "出错:", "执行出错:", "分析用户画像时出错", "制定营销战略时出错",  
+            "设计创意活动时出错", "创作营销文案时出错",  
+            "NameError:", "TypeError:", "AttributeError:", "ValueError:",  
+            "unsupported operand", "not defined", "NoneType", "object has no attribute"  
+        ]  
+        
+        if not isinstance(result, str):  
+            return False  
+            
+        return any(indicator in result for indicator in error_indicators)  
 
     def _update_progress_sync(self, job_id, progress, output):  
         """同步版本的进度更新函数"""  
@@ -159,8 +185,8 @@ class MarketingCrew:
         """生成任务回调函数"""  
         async def callback_func(output):  
             await self.memory_manager.update_job_progress(  
-                self.job_id,   
-                progress,   
+                self.job_id,  
+                progress,  
                 f"完成任务: {task_name}\n\n{output.raw}"  
             )  
             return output  

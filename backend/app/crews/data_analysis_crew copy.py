@@ -1,8 +1,7 @@
 from crewai import Crew, Process  
 from app.agents.query_expert import QueryExpertAgent  
-# 第一轮测试暂时不需要这些agent  
-# from app.agents.database_expert import DatabaseExpertAgent  
-# from app.agents.data_analyst import DataAnalystAgent  
+from app.agents.database_expert import DatabaseExpertAgent  
+from app.agents.data_analyst import DataAnalystAgent  
 from app.core.logger import logger  
 from app.utils.memory_manager import RedisMemoryManager  
 from app.utils.llm_factory import get_llm  
@@ -10,7 +9,7 @@ from app.utils.llm_factory import get_llm
 from app.tasks import DataAnalysisTasks  
 
 class DataAnalysisCrew:  
-    """数据分析Crew - 第一轮测试版本 (仅SQL翻译)"""  
+    """数据分析Crew - 管理数据分析流程的3个Agent协作"""  
     
     def __init__(self, redis_client, job_id: str, query: str, history: str = ""):  
         self.redis_client = redis_client  
@@ -20,36 +19,42 @@ class DataAnalysisCrew:
         self.memory_manager = RedisMemoryManager(redis_client)  
         self.llm = get_llm()  
         
-        # 第一轮测试只创建query_expert_agent  
+        # 创建三个Agent  
         self.query_expert_agent = QueryExpertAgent().get_agent(self.llm)  
+        self.database_expert_agent = DatabaseExpertAgent().get_agent(self.llm)  
+        self.data_analyst_agent = DataAnalystAgent().get_agent(self.llm)  
         
-        # 创建任务生成器 - 传递None作为其他agent  
+        # 创建任务生成器  
         self.task_generator = DataAnalysisTasks(  
             self.query_expert_agent,  
-            None,  # database_expert_agent  
-            None   # data_analyst_agent  
+            self.database_expert_agent,  
+            self.data_analyst_agent  
         )  
     
     def execute(self):  
-        """执行数据分析Crew的简化流程 - 第一轮测试 (仅SQL翻译)"""  
+        """执行数据分析Crew的完整流程 - 同步方法"""  
         try:  
             # 使用同步方法更新状态  
             self._update_progress_sync(  
                 self.job_id,  
                 5,  
-                "启动SQL翻译流程... (第一轮测试)"  
+                "启动数据分析流程..."  
             )  
             
-            # 使用任务生成器创建任务 (只有一个SQL翻译任务)  
+            # 使用任务生成器创建任务  
             tasks = self.task_generator.create_tasks(  
                 self.query,  
                 self.history,  
                 self._task_callback_sync  
             )  
             
-            # 创建Crew - 只有query_expert_agent  
+            # 创建Crew  
             crew = Crew(  
-                agents=[self.query_expert_agent],  
+                agents=[  
+                    self.query_expert_agent,  
+                    self.database_expert_agent,  
+                    self.data_analyst_agent  
+                ],  
                 tasks=tasks,  
                 process=Process.sequential,  
                 verbose=True,  
@@ -59,7 +64,7 @@ class DataAnalysisCrew:
             def check_task_result(task, output):  
                 # 检查输出是否包含错误信息  
                 if isinstance(output, str) and any(err in output for err in [  
-                    "错误:", "出错:", "执行出错:",  
+                    "错误:", "出错:", "执行出错:", "执行统计分析时出错", "生成数据可视化时出错",  
                     "NameError:", "TypeError:", "AttributeError:", "ValueError:"  
                 ]):  
                     # 记录错误信息  
@@ -106,13 +111,13 @@ class DataAnalysisCrew:
             self._update_progress_sync(  
                 self.job_id,  
                 100,  
-                f"SQL翻译结果 (第一轮测试):\n\n{result_str}"  
+                result_str  
             )  
             
             return result_str  
             
         except Exception as e:  
-            error_message = f"SQL翻译流程执行错误: {str(e)}"  
+            error_message = f"数据分析Crew执行错误: {str(e)}"  
             logger.error(error_message, exc_info=True)  
             self._update_progress_sync(  
                 self.job_id,  
@@ -121,11 +126,10 @@ class DataAnalysisCrew:
             )  
             return f"处理您的请求时出现错误: {str(e)}"  
 
-    # 以下方法保持不变  
     def _is_error_result(self, result: str) -> bool:  
         """检查结果是否包含错误信息"""  
         error_indicators = [  
-            "错误:", "出错:", "执行出错:",  
+            "错误:", "出错:", "执行出错:", "执行统计分析时出错", "生成数据可视化时出错",  
             "NameError:", "TypeError:", "AttributeError:", "ValueError:",  
             "unsupported operand", "not defined", "NoneType", "object has no attribute"  
         ]  
@@ -188,8 +192,8 @@ class DataAnalysisCrew:
         """生成任务回调函数"""  
         async def callback_func(output):  
             await self.memory_manager.update_job_progress(  
-                self.job_id,  
-                progress,  
+                self.job_id,   
+                progress,   
                 f"完成任务: {task_name}\n\n{output.raw}"  
             )  
             return output  
