@@ -1,0 +1,7 @@
+fastapi                # FastAPI框架  
+uvicorn               # ASGI服务器，用于运行FastAPI应用  
+pandas                # 数据处理库  
+python-multipart      # 处理文件上传  
+pydantic              # 数据验证库，FastAPI默认使用  
+aiofiles              # 异步文件处理库  
+crewAI                # 用于支持多个AI角色（如需）  

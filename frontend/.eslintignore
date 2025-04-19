@@ -1,0 +1,14 @@
+# 忽略 node_modules 目录下的所有文件
+node_modules/
+backstop_data/
+_backup/
+dist/
+docs/
+config/
+tests/
+.eslintrc
+jest.config.js
+webpack.config.js
+postcss.config.js
+cypress.config.js
+cypress.config.ts

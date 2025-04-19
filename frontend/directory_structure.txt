@@ -1,0 +1,101 @@
+.
+├── components.json
+├── config
+│   ├── icon.png
+│   ├── webpack.development.js
+│   └── webpack.production.js
+├── directory_structure.txt
+├── dist
+├── jest.config.js
+├── node_modules
+│   ├── @microsoft
+│   ├── @radix-ui
+│   ├── @soda
+│   ├── @swc
+│   ├── @tailwindcss
+│   ├── @types
+│   ├── @typescript-eslint
+│   ├── @welldone-software
+│   ├── autoprefixer -> .pnpm/autoprefixer@10.4.17_postcss@8.4.35/node_modules/autoprefixer
+│   ├── axios -> .pnpm/axios@1.8.3/node_modules/axios
+│   ├── backstopjs -> .pnpm/backstopjs@6.3.25_typescript@5.8.2/node_modules/backstopjs
+│   ├── class-variance-authority -> .pnpm/class-variance-authority@0.7.1/node_modules/class-variance-authority
+│   ├── clean-webpack-plugin -> .pnpm/clean-webpack-plugin@4.0.0_webpack@5.98.0/node_modules/clean-webpack-plugin
+│   ├── clsx -> .pnpm/clsx@2.1.1/node_modules/clsx
+│   ├── css-loader -> .pnpm/css-loader@7.1.2_webpack@5.98.0/node_modules/css-loader
+│   ├── css-minimizer-webpack-plugin -> .pnpm/css-minimizer-webpack-plugin@7.0.2_webpack@5.98.0/node_modules/css-minimizer-webpack-plugin
+│   ├── cypress -> .pnpm/cypress@14.1.0/node_modules/cypress
+│   ├── dotenv-webpack -> .pnpm/dotenv-webpack@8.1.0_webpack@5.98.0/node_modules/dotenv-webpack
+│   ├── eslint -> .pnpm/eslint@8.57.1/node_modules/eslint
+│   ├── eslint-config-airbnb-typescript -> .pnpm/eslint-config-airbnb-typescript@18.0.0_@typescript-eslint+eslint-plugin@7.18.0_@typescr_c0931449e30ee1a4e7f9d8d4fca93c2e/node_modules/eslint-config-airbnb-typescript
+│   ├── eslint-config-prettier -> .pnpm/eslint-config-prettier@10.1.1_eslint@8.57.1/node_modules/eslint-config-prettier
+│   ├── eslint-plugin-jest -> .pnpm/eslint-plugin-jest@28.11.0_@typescript-eslint+eslint-plugin@7.18.0_@typescript-eslint+p_cf13f9d4f8bca2ffcc7bf3f5b6141de1/node_modules/eslint-plugin-jest
+│   ├── eslint-plugin-prettier -> .pnpm/eslint-plugin-prettier@5.2.3_@types+eslint@9.6.1_eslint-config-prettier@10.1.1_eslint@8_cea23b1889e07883bf3c98b315b94160/node_modules/eslint-plugin-prettier
+│   ├── eslint-plugin-react -> .pnpm/eslint-plugin-react@7.37.4_eslint@8.57.1/node_modules/eslint-plugin-react
+│   ├── eslint-plugin-react-hooks -> .pnpm/eslint-plugin-react-hooks@5.2.0_eslint@8.57.1/node_modules/eslint-plugin-react-hooks
+│   ├── framer-motion -> .pnpm/framer-motion@12.5.0_react-dom@19.0.0_react@19.0.0__react@19.0.0/node_modules/framer-motion
+│   ├── html-webpack-plugin -> .pnpm/html-webpack-plugin@5.6.3_webpack@5.98.0/node_modules/html-webpack-plugin
+│   ├── html2canvas -> .pnpm/html2canvas@1.4.1/node_modules/html2canvas
+│   ├── husky -> .pnpm/husky@9.1.7/node_modules/husky
+│   ├── jest -> .pnpm/jest@29.7.0_@types+node@22.13.10_node-notifier@10.0.1/node_modules/jest
+│   ├── jest-stare -> .pnpm/jest-stare@2.5.2_@popperjs+core@2.11.8_node-notifier@10.0.1/node_modules/jest-stare
+│   ├── jotai -> .pnpm/jotai@2.12.2_@types+react@19.0.10_react@19.0.0/node_modules/jotai
+│   ├── jotai-immer -> .pnpm/jotai-immer@0.4.1_immer@10.1.1_jotai@2.12.2_@types+react@19.0.10_react@19.0.0_/node_modules/jotai-immer
+│   ├── lodash-es -> .pnpm/lodash-es@4.17.21/node_modules/lodash-es
+│   ├── lucide-react -> .pnpm/lucide-react@0.479.0_react@19.0.0/node_modules/lucide-react
+│   ├── majestic -> .pnpm/majestic@1.8.1/node_modules/majestic
+│   ├── mini-css-extract-plugin -> .pnpm/mini-css-extract-plugin@2.9.2_webpack@5.98.0/node_modules/mini-css-extract-plugin
+│   ├── node-notifier -> .pnpm/node-notifier@10.0.1/node_modules/node-notifier
+│   ├── postcss -> .pnpm/postcss@8.4.35/node_modules/postcss
+│   ├── postcss-loader -> .pnpm/postcss-loader@8.1.1_postcss@8.4.35_typescript@5.8.2_webpack@5.98.0/node_modules/postcss-loader
+│   ├── prettier -> .pnpm/prettier@3.5.3/node_modules/prettier
+│   ├── progress-bar-webpack-plugin -> .pnpm/progress-bar-webpack-plugin@2.1.0_webpack@5.98.0/node_modules/progress-bar-webpack-plugin
+│   ├── react -> .pnpm/react@19.0.0/node_modules/react
+│   ├── react-dom -> .pnpm/react-dom@19.0.0_react@19.0.0/node_modules/react-dom
+│   ├── react-helmet-async -> .pnpm/react-helmet-async@2.0.5_react@19.0.0/node_modules/react-helmet-async
+│   ├── react-markdown -> .pnpm/react-markdown@10.1.0_@types+react@19.0.10_react@19.0.0/node_modules/react-markdown
+│   ├── react-router-dom -> .pnpm/react-router-dom@7.3.0_react-dom@19.0.0_react@19.0.0__react@19.0.0/node_modules/react-router-dom
+│   ├── rehype-raw -> .pnpm/rehype-raw@7.0.0/node_modules/rehype-raw
+│   ├── remark-gfm -> .pnpm/remark-gfm@4.0.1/node_modules/remark-gfm
+│   ├── style-loader -> .pnpm/style-loader@4.0.0_webpack@5.98.0/node_modules/style-loader
+│   ├── swc-loader -> .pnpm/swc-loader@0.2.6_@swc+core@1.11.8_webpack@5.98.0/node_modules/swc-loader
+│   ├── tailwind-merge -> .pnpm/tailwind-merge@3.0.2/node_modules/tailwind-merge
+│   ├── tailwindcss -> .pnpm/tailwindcss@3.4.1/node_modules/tailwindcss
+│   ├── tailwindcss-animate -> .pnpm/tailwindcss-animate@1.0.7_tailwindcss@3.4.1/node_modules/tailwindcss-animate
+│   ├── themed-progress-plugin -> .pnpm/themed-progress-plugin@1.0.1_webpack@5.98.0/node_modules/themed-progress-plugin
+│   ├── typescript -> .pnpm/typescript@5.8.2/node_modules/typescript
+│   ├── webpack -> .pnpm/webpack@5.98.0_@swc+core@1.11.8_webpack-cli@6.0.1/node_modules/webpack
+│   ├── webpack-bundle-analyzer -> .pnpm/webpack-bundle-analyzer@4.10.2/node_modules/webpack-bundle-analyzer
+│   ├── webpack-cli -> .pnpm/webpack-cli@6.0.1_webpack-bundle-analyzer@4.10.2_webpack-dev-server@5.2.0_webpack@5.98.0/node_modules/webpack-cli
+│   ├── webpack-dev-server -> .pnpm/webpack-dev-server@5.2.0_webpack-cli@6.0.1_webpack@5.98.0/node_modules/webpack-dev-server
+│   ├── webpack-merge -> .pnpm/webpack-merge@6.0.1/node_modules/webpack-merge
+│   ├── webpackbar -> .pnpm/webpackbar@7.0.0_webpack@5.98.0/node_modules/webpackbar
+│   └── yargs-parser -> .pnpm/yargs-parser@21.1.1/node_modules/yargs-parser
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.js
+├── prettier.config.js
+├── public
+│   ├── favicon.ico
+│   └── logo.png
+├── src
+│   ├── components
+│   ├── hooks
+│   ├── index-dev.html
+│   ├── index-prod.html
+│   ├── index.tsx
+│   ├── layouts
+│   ├── lib
+│   ├── pages
+│   ├── routes
+│   ├── services
+│   ├── states
+│   ├── styles
+│   ├── types
+│   └── wdyr.tsx
+├── tailwind.config.js
+├── tsconfig.eslint.json
+├── tsconfig.json
+└── webpack.config.js
+
+79 directories, 20 files

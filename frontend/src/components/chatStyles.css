@@ -1,0 +1,89 @@
+/* chatStyles.css */
+.bubble-container .ant-bubble {
+  width: 100% !important;
+}
+
+.bubble-container .ant-bubble-content {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* 固定图表容器宽度 */
+.chart-container {
+  width: 100%;
+  max-width: 600px; /* 可根据需要调整 */
+  margin: 16px 0;
+}
+
+/* 增强表格样式 */
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #e8e8e8;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: #fafafa;
+  font-weight: 500;
+}
+
+.markdown-content tr:hover {
+  background: #f5f5f5;
+}
+
+/* 改进 Markdown 内容样式 */
+.markdown-content {
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.markdown-content h3 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  color: #1677ff;
+  font-weight: 500;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  padding-left: 24px;
+}
+
+.markdown-content li {
+  margin-bottom: 8px;
+}
+
+.markdown-content strong {
+  font-weight: 500;
+}
+
+/* 固定问题宽度 */
+.ant-bubble[placement='end'] .ant-bubble-content {
+  background-color: #e6f7ff;
+  min-width: 200px; /* 确保用户问题有一个最小宽度 */
+}
+
+.enabled-button {
+  background: #1677ff !important;
+}
+
+.disabled-button {
+  opacity: 0.5;
+  background: #f5f5f5 !important;
+  color: rgba(0, 0, 0, 0.25) !important;
+}
+
+.enabled-button .anticon {
+  color: white !important;
+}
+
+.disabled-button .anticon {
+  color: rgba(0, 0, 0, 0.25) !important;
+}
